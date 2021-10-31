@@ -37,7 +37,7 @@ def read_constraint_matrix():
     return A
 
 
-def create_model():
+def create_model(inventory):
     A = read_constraint_matrix()
     l = gp.tuplelist()
     for b in B:
@@ -51,7 +51,7 @@ def create_model():
     m.setParam('OUTPUT_FLAG',False)
     m.setObjective(gp.quicksum(c[b]*y[b] for b in B), GRB.MAXIMIZE)
 
-    m.addConstrs((x.sum('*', i) <= z[i] for i in range(len(I))))
+    m.addConstrs((x.sum('*', i) <= inventory[i] for i in range(len(I))))
 
     m.setObjective(gp.quicksum(c[b]*y[b] for b in B), GRB.MAXIMIZE)
 
@@ -63,6 +63,4 @@ def create_model():
     optimal_df.sort_values(by=['value'], ascending=False)
     optimal_df = optimal_df[['name', 'count', 'value', 'first_ingredient', 'second_ingredient', 'third_ingredient', 'descriptions']]
     optimal_df = optimal_df.sort_values(by='value', ascending=False)
-    optimal_df
-
-create_model()
+    return [m.objVal, optimal_df]

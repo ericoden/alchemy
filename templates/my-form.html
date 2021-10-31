@@ -1,6 +1,10 @@
 <form method="POST">
-<button class="favorite styled"
-    type="button">
-Add to favorites
-</button>
+
+<p>
+{% for i in ingredients %}
+{{i}} <input type="number" name="{{i}}" value=0>
+<br>
+{% endfor %}
+<input type="submit" name="submit" id="submit"/>
+</p>
 </form>
