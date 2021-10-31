@@ -13,11 +13,11 @@ brew_df
 
 effects_df
 
-ALCHEMY_SKILL = 30
-ALCHEMIST_PERK_RANK = 3
-PHYSICIAN_PERK = True
-BENEFACTOR_PERK = True
-POISONER_PERK = True
+#ALCHEMY_SKILL = 30
+#ALCHEMIST_PERK_RANK = 3
+#PHYSICIAN_PERK = True
+#BENEFACTOR_PERK = True
+#POISONER_PERK = True
 
 def get_alchemist_factor():
     return 20 * ALCHEMIST_PERK_RANK
@@ -44,7 +44,6 @@ def get_poisoner_factor(effect, brew_type):
 
 def get_power_factor(effect, perks, brew_type):
     ingredient_factor = 4.0
-    skill_factor = 1.5
     alchemy_skill = ALCHEMY_SKILL
     fortify_alchemy = 0
     alchemist_factor = get_alchemist_factor()
@@ -158,21 +157,27 @@ def get_total_value(index):
     brew_name = brew_type + ' of ' + primary_effect['name']
     return [total_value, brew_name, description_list]
 
+def calculate_costs(ALCHEMY_SKILL = 49,
+                    ALCHEMIST_PERK_RANK = 1,
+                    PHYSICIAN_PERK = False,
+                    BENEFACTOR_PERK = False,
+                    POISONER_PERK = False):
+    brew_names = []
+    brew_values = []
+    brew_descriptions = []
+    tic = time.perf_counter()
+    for i in range(len(brew_df)):
+        [value, brew_name, descriptions] = get_total_value(i)
+        if i % 1000 == 0:
+            toc = time.perf_counter()
+            print('Index:', i, 'Elapsed Time', np.round(toc-tic, 2), 'seconds')
+        brew_names.append(brew_name)
+        brew_values.append(value)
+        brew_descriptions.append(descriptions)
+        
+    brew_df['name'] = brew_names
+    brew_df['value'] = brew_values
+    brew_df['descriptions'] = brew_descriptions
+    brew_df.to_pickle('data/brews_with_costs.pkl')
 
-brew_names = []
-brew_values = []
-brew_descriptions = []
-tic = time.perf_counter()
-for i in range(len(brew_df)):
-    [value, brew_name, descriptions] = get_total_value(i)
-    if i % 1000 == 0:
-        toc = time.perf_counter()
-        print('Index:', i, 'Elapsed Time', np.round(toc-tic, 2), 'seconds')
-    brew_names.append(brew_name)
-    brew_values.append(value)
-    brew_descriptions.append(descriptions)
-    
-brew_df['name'] = brew_names
-brew_df['value'] = brew_values
-brew_df['descriptions'] = brew_descriptions
-brew_df.to_pickle('data/brews_with_costs.pkl')
+calculate_costs()
