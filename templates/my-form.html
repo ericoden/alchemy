@@ -1,10 +1,97 @@
 <form method="POST">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+    box-sizing: border-box;
+}
 
-<p>
-{% for i in ingredients %}
-{{i}} <input type="number" name="{{i}}" value=0>
-<br>
-{% endfor %}
-<input type="submit" name="submit" id="submit"/>
-</p>
+/* Create two equal columns that float next to each other */
+.column {
+    float: left;
+}
+
+.left {
+  width: 18%;
+}
+
+.right {
+  width: 82%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+input[type="number"] {
+    width: 40px;
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+tr {
+    border-bottom: 1px solid #ddd;
+}
+tr:hover {background-color: #D6EEEE;}
+</style>
+</head>
+
+<div class="row">
+    <div class="column left">
+      <h1>Input</h1>
+      <input type="submit" name="submit" value='Submit' />
+      <input type="submit" name='reset' value="Reset">
+      <table>
+        {% for key, value in inventory_df.iterrows() %}
+        <tr>
+        <td>{{value['ingredient']}}</td>
+        <td><input type="number" name="{{ value['ingredient'] }}" value = {{ value['inventory'] }} min=0></td>
+        </tr>
+        {% endfor %}
+        </table>
+
+    </div>
+    <div class="column right">
+      <h1>Output</h1>
+    {% if z > -1 %}
+    <p>
+        Optimal Objective: {{z}}
+    </p>
+    
+    <table>
+    <tr>
+        <th>Potion</th>
+        <th>Count</th>
+        <th>Value</th>
+        <th>Ingredient 1</th>
+        <th>Ingredient 2</th>
+        <th>Ingredient 3</th>
+        <th>Effect(s)</th>
+    </tr>
+    {% for key, value in df.iterrows() %}
+    <tr>
+    <td>{{ value['name'] }} </td>
+    <td>{{ value['count'] }} </td>
+    <td>{{ value['value'] }} </td>
+    <td>{{ value['first_ingredient'] }} </td>
+    <td>{{ value['second_ingredient'] }} </td>
+    <td>{{ value['third_ingredient'] }} </td>
+    <td>{% for description in value['descriptions'] %} 
+        {{description}}
+        <br>
+        {% endfor %}
+    </td>
+    </tr>
+    {% endfor %}
+    </table>
+    </div>
+    {% endif %}
+  </div>
+
 </form>
