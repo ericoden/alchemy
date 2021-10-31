@@ -41,12 +41,51 @@ tr {
 tr:hover {background-color: #D6EEEE;}
 </style>
 </head>
-
+<h1>Optimal Alchemy Potions Calculator for Skyrim</h1>
+<p>Based on player stats and current inventory, calculates and displays the list of potions to get the most value.</p>
 <div class="row">
     <div class="column left">
-      <h1>Input</h1>
-      <input type="submit" name="submit" value='Submit' />
-      <input type="submit" name='reset' value="Reset">
+        <h2>Player Stats</h2>
+        <div>
+        <input type="submit" name="submit" value='Submit' />
+        </div>
+        <div>
+        <input type="button" value="Reset">
+        </div>
+
+        <div>
+            Alchemy Skill
+            <input type="number" name="Alchemy Skill" value = 10 min= 0>
+        </div>
+
+        <div>
+            Alchemist Perk
+            <select name="Alchemist Perk" name="Alchemist Perk">
+                <option value='0'>0</option>
+                <option value='1'>1</option>
+                <option value='2'>2</option>
+                <option value='3'>3</option>
+                <option value='4'>4</option>
+                <option value='5'>5</option>
+            </select>
+        </div>
+
+        <div>
+          <input type="checkbox" id="Physician Perk" name="Physician Perk">
+          <label for="Physician Perk">Physician Perk</label>
+        </div>
+
+        <div>
+            <input type="checkbox" id="Benefactor Perk" name="Benefactor Perk">
+            <label for="Benefactor Perk">Benefactor Perk</label>
+          </div>
+
+        <div>
+            <input type="checkbox" id="Poisoner Perk" name="Poisoner Perk">
+            <label for="Poisoner Perk">Poisoner Perk</label>
+        </div>
+    <h2>Inventory</h2>
+
       <table>
         {% for key, value in inventory_df.iterrows() %}
         <tr>
@@ -58,10 +97,10 @@ tr:hover {background-color: #D6EEEE;}
 
     </div>
     <div class="column right">
-      <h1>Output</h1>
+      <h2>Solution</h2>
     {% if z > -1 %}
     <p>
-        Optimal Objective: {{z}}
+        Maximum Value: {{z}}
     </p>
     
     <table>

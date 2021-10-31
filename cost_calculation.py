@@ -13,11 +13,11 @@ brew_df
 
 effects_df
 
-#ALCHEMY_SKILL = 30
-#ALCHEMIST_PERK_RANK = 3
-#PHYSICIAN_PERK = True
-#BENEFACTOR_PERK = True
-#POISONER_PERK = True
+ALCHEMY_SKILL = 100
+ALCHEMIST_PERK_RANK = 3
+PHYSICIAN_PERK = False
+BENEFACTOR_PERK = False
+POISONER_PERK = True
 
 def get_alchemist_factor():
     return 20 * ALCHEMIST_PERK_RANK
@@ -96,7 +96,7 @@ def get_effect_value(effect, ingredients, perks=False, brew_type='NA'):
     
     magnitude = effect['base_magnitude'] * multipliers[0]
     duration = effect['base_duration'] * multipliers[1]
-    value = effect['base_cost'] * multipliers[2]
+    value = effect['base_cost'] * 1
 
     power_factor = get_power_factor(effect, perks, brew_type)
     
@@ -127,6 +127,7 @@ def get_effect_value(effect, ingredients, perks=False, brew_type='NA'):
         description = description.replace('<dur>', str(duration))
         return [value, description]
     else:
+        #print(f"Effect: {effect['name']} \t Magnitude: {magnitude} \t Duration: {duration} \t Value: {value}")
         return value
 
 def get_total_value(index):
@@ -135,6 +136,7 @@ def get_total_value(index):
     ingredients = [brew.first_ingredient, 
                    brew.second_ingredient, 
                    brew.third_ingredient]
+    #print(ingredients)
     # get gold value of each effect, WITHOUT factoring in perks
     # to get the primary effect
     max_value = 0
@@ -155,13 +157,27 @@ def get_total_value(index):
         total_value += result[0]
         description_list.append(result[1])
     brew_name = brew_type + ' of ' + primary_effect['name']
+    #print(brew_name, 'Total Value:', total_value)
     return [total_value, brew_name, description_list]
 
-def calculate_costs(ALCHEMY_SKILL = 49,
-                    ALCHEMIST_PERK_RANK = 1,
-                    PHYSICIAN_PERK = False,
-                    BENEFACTOR_PERK = False,
-                    POISONER_PERK = False):
+def calculate_costs(alchemy_skill = 49,
+                    alchemist_perk_rank = 1,
+                    physician_perk = False,
+                    benefactor_perk = False,
+                    poisoner_perk = False):
+    
+    global ALCHEMY_SKILL
+    global ALCHEMIST_PERK_RANK
+    global PHYSICIAN_PERK
+    global BENEFACTOR_PERK
+    global POISONER_PERK
+
+    ALCHEMY_SKILL = alchemy_skill
+    ALCHEMIST_PERK_RANK = alchemist_perk_rank
+    PHYSICIAN_PERK = physician_perk
+    BENEFACTOR_PERK = benefactor_perk
+    POISONER_PERK = poisoner_perk
+
     brew_names = []
     brew_values = []
     brew_descriptions = []
@@ -180,4 +196,5 @@ def calculate_costs(ALCHEMY_SKILL = 49,
     brew_df['descriptions'] = brew_descriptions
     brew_df.to_pickle('data/brews_with_costs.pkl')
 
+#get_total_value(10001)
 calculate_costs()
