@@ -9,16 +9,6 @@ brew_df = pd.read_pickle('data/brews.pkl')
 effects_df = pd.read_pickle('data/effects.pkl')
 ingredients_df = pd.read_pickle('data/ingredients.pkl')
 
-brew_df
-
-effects_df
-
-ALCHEMY_SKILL = 100
-ALCHEMIST_PERK_RANK = 3
-PHYSICIAN_PERK = False
-BENEFACTOR_PERK = False
-POISONER_PERK = True
-
 def get_alchemist_factor():
     return 20 * ALCHEMIST_PERK_RANK
 
@@ -45,7 +35,7 @@ def get_poisoner_factor(effect, brew_type):
 def get_power_factor(effect, perks, brew_type):
     ingredient_factor = 4.0
     alchemy_skill = ALCHEMY_SKILL
-    fortify_alchemy = 0
+    fortify_alchemy = FORTIFY_ALCHEMY
     alchemist_factor = get_alchemist_factor()
     
     if perks:
@@ -160,20 +150,23 @@ def get_total_value(index):
     #print(brew_name, 'Total Value:', total_value)
     return [total_value, brew_name, description_list]
 
-def calculate_costs(alchemy_skill = 49,
-                    alchemist_perk_rank = 1,
+def calculate_costs(alchemy_skill = 33,
+                    alchemist_perk_rank = 0,
+                    fortify_alchemy = 0,
                     physician_perk = False,
                     benefactor_perk = False,
                     poisoner_perk = False):
     
     global ALCHEMY_SKILL
     global ALCHEMIST_PERK_RANK
+    global FORTIFY_ALCHEMY
     global PHYSICIAN_PERK
     global BENEFACTOR_PERK
     global POISONER_PERK
 
     ALCHEMY_SKILL = alchemy_skill
     ALCHEMIST_PERK_RANK = alchemist_perk_rank
+    FORTIFY_ALCHEMY = fortify_alchemy
     PHYSICIAN_PERK = physician_perk
     BENEFACTOR_PERK = benefactor_perk
     POISONER_PERK = poisoner_perk
@@ -194,7 +187,12 @@ def calculate_costs(alchemy_skill = 49,
     brew_df['name'] = brew_names
     brew_df['value'] = brew_values
     brew_df['descriptions'] = brew_descriptions
-    brew_df.to_pickle('data/brews_with_costs.pkl')
+    brew_df.to_pickle(f'data/brews_with_costs_{ALCHEMY_SKILL}_{ALCHEMIST_PERK_RANK}_{FORTIFY_ALCHEMY}_{PHYSICIAN_PERK}_{BENEFACTOR_PERK}_{POISONER_PERK}.pkl')
 
 #get_total_value(10001)
-calculate_costs()
+#calculate_costs(alchemy_skill=45,
+#                alchemist_perk_rank=3,
+#                fortify_alchemy=0,
+#                physician_perk=0,
+#                benefactor_perk=0,
+#                poisoner_perk=0)

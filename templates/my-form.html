@@ -42,7 +42,7 @@ tr:hover {background-color: #D6EEEE;}
 </style>
 </head>
 <h1>Optimal Alchemy Potions Calculator for Skyrim</h1>
-<p>Based on player stats and current inventory, calculates and displays the list of potions to get the most value.</p>
+<p>Based on player stats and current inventory, calculates and displays the list of potions to get the maximum gold.</p>
 <div class="row">
     <div class="column left">
         <h2>Player Stats</h2>
@@ -55,18 +55,18 @@ tr:hover {background-color: #D6EEEE;}
 
         <div>
             Alchemy Skill
-            <input type="number" name="Alchemy Skill" value = 10 min= 0>
+            <input type="number" name="Alchemy Skill" value = {{ stats[0] }} min= 0>
         </div>
 
         <div>
             Alchemist Perk
             <select name="Alchemist Perk" name="Alchemist Perk">
-                <option value='0'>0</option>
-                <option value='1'>1</option>
-                <option value='2'>2</option>
-                <option value='3'>3</option>
-                <option value='4'>4</option>
-                <option value='5'>5</option>
+                <option value='0'{% if stats[1] == 0 %} selected {% endif %}>0</option>
+                <option value='1'{% if stats[1] == 1 %} selected {% endif %}>1</option>
+                <option value='2'{% if stats[1] == 2 %} selected {% endif %}>2</option>
+                <option value='3'{% if stats[1] == 3 %} selected {% endif %}>3</option>
+                <option value='4'{% if stats[1] == 4 %} selected {% endif %}>4</option>
+                <option value='5'{% if stats[1] == 5 %} selected {% endif %}>5</option>
             </select>
         </div>
 

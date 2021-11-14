@@ -3,15 +3,15 @@ import gurobipy as gp
 from gurobipy import GRB
 import scipy.sparse as sp
 import numpy as np
-
-brews_df = pd.read_pickle('data/brews_with_costs.pkl')
+from os.path import exists
+from cost_calculation import calculate_costs
+brews_df = pd.read_pickle('data/brews_with_costs_45_3_0_0_0_0.pkl')
 ingredients_df = pd.read_pickle('data/ingredients.pkl')
 brews = list(brews_df.name)
 ingredients = list(ingredients_df.name)
 
 B = [i for i in range(len(brews_df))]
 I = [i for i in range(len(ingredients_df))]
-c = np.array(brews_df['value'])
 # randomly generate inventory
 z = np.random.poisson(lam=1, size=len(I))
 
@@ -37,7 +37,16 @@ def read_constraint_matrix():
     return A
 
 
-def create_model(inventory):
+def create_model(inventory, stats):
+    stat_string = f'{stats[0]}_{stats[1]}_{stats[2]}_{stats[3]}_{stats[4]}_{stats[5]}'
+    if exists('data/brews_with_costs_'+stat_string+'.pkl'):
+        print("Brew costs already calculated!")
+    else:
+        calculate_costs(stats[0], stats[1], stats[2], stats[3], stats[4], stats[5])
+    brews_df = pd.read_pickle('data/brews_with_costs_'+stat_string+'.pkl')
+
+    c = np.array(brews_df['value'])
+
     A = read_constraint_matrix()
     l = gp.tuplelist()
     for b in B:
