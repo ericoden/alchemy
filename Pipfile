@@ -10,6 +10,7 @@ pandas = "*"
 scipy = "*"
 gurobipy = "*"
 numpy = "*"
+mip = "*"
 
 [dev-packages]
 

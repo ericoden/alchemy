@@ -1,6 +1,7 @@
 import pandas as pd
 import gurobipy as gp
 from gurobipy import GRB
+from mip import Model, xsum, maximize, INTEGER
 import scipy.sparse as sp
 import numpy as np
 from os.path import exists
@@ -49,27 +50,58 @@ def create_model(inventory, stats):
 
     A = read_constraint_matrix()
     l = gp.tuplelist()
+    brew_ingredient_pairs = []
     for b in B:
         for i in A[b]:
             l.append((b,i))
             
-    m = gp.Model('alchemy')
-    x = m.addVars(l, vtype=GRB.CONTINUOUS, name='x')
-    y = m.addVars(B, vtype=GRB.INTEGER, name='y')
-    m.addConstrs((y[b] <= x[b,i] for (b,i) in l))
-    m.setParam('OUTPUT_FLAG',False)
-    m.setObjective(gp.quicksum(c[b]*y[b] for b in B), GRB.MAXIMIZE)
+    brew_ingredient_pairs = []
+    for b in B:
+        for i in A[b]:
+            brew_ingredient_pairs.append([b,i])
 
-    m.addConstrs((x.sum('*', i) <= inventory[i] for i in range(len(I))))
+    m = Model('alchemy-mip')
+    x = [[m.add_var() for i in I] for b in B]
+    y = [m.add_var(var_type=INTEGER) for b in B]
+    for pair in brew_ingredient_pairs:
+        b = pair[0]
+        i = pair[1]
+        m += y[b] <= x[b][i]
 
-    m.setObjective(gp.quicksum(c[b]*y[b] for b in B), GRB.MAXIMIZE)
+    for i in I:
+        m += xsum(x[b][i] for b in B) <= inventory[i]
+
+    m.objective = maximize(xsum(c[b] * y[b] for b in B))
 
     m.optimize()
-
+    print("mip objective:", m.objective_value)
     optimal_brews = [b for b in B if y[b].x > 0.5]
+    
+    #m = gp.Model('alchemy')
+    #x = m.addVars(l, vtype=GRB.CONTINUOUS, name='x')
+    #y = m.addVars(B, vtype=GRB.INTEGER, name='y')
+    #m.addConstrs((y[b] <= x[b,i] for (b,i) in l))
+    #m.setParam('OUTPUT_FLAG',False)
+    #m.addConstrs((x.sum('*', i) <= inventory[i] for i in range(len(I))))
+    #m.setObjective(gp.quicksum(c[b]*y[b] for b in B), GRB.MAXIMIZE)
+    #m.optimize()
+    #optimal_brews = [b for b in B if y[b].x > 0.5]
+
+
     optimal_df = brews_df.loc[optimal_brews]
     optimal_df['count'] = [int(y[b].x) for b in B if y[b].x > 0.5]
     optimal_df.sort_values(by=['value'], ascending=False)
     optimal_df = optimal_df[['name', 'count', 'value', 'first_ingredient', 'second_ingredient', 'third_ingredient', 'descriptions']]
     optimal_df = optimal_df.sort_values(by='value', ascending=False)
-    return [m.objVal, optimal_df]
+    
+    #print("Gurobi objective:", m.objVal)
+
+
+
+
+    
+    return [m.objective_value, optimal_df]
+
+if __name__ == "__main__":
+    inventory = [np.random.randint(0,10) for i in range(len(ingredients))]
+    create_model(inventory, [10,0,0,0,0,0])
