@@ -40,7 +40,7 @@ def read_constraint_matrix():
 
 def create_model(inventory, stats):
     stat_string = f'{stats[0]}_{stats[1]}_{stats[2]}_{stats[3]}_{stats[4]}_{stats[5]}'
-    if exists('app/data/brews_with_costs_'+stat_string+'.pkl'):
+    if exists('data/brews_with_costs_'+stat_string+'.pkl'):
         print("Brew costs already calculated!")
     else:
         calculate_costs(stats[0], stats[1], stats[2], stats[3], stats[4], stats[5])
