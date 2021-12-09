@@ -4,6 +4,7 @@ from gurobipy import GRB
 from mip import Model, xsum, maximize, INTEGER
 import scipy.sparse as sp
 import numpy as np
+import os
 from os.path import exists
 from cost_calculation import calculate_costs
 brews_df = pd.read_pickle('data/brews_with_costs_45_3_0_0_0_0.pkl')
@@ -39,10 +40,12 @@ def read_constraint_matrix():
 
 
 def create_model(inventory, stats):
+    flag = 0
     stat_string = f'{stats[0]}_{stats[1]}_{stats[2]}_{stats[3]}_{stats[4]}_{stats[5]}'
     if exists('data/brews_with_costs_'+stat_string+'.pkl'):
         print("Brew costs already calculated!")
     else:
+        flag = 1
         calculate_costs(stats[0], stats[1], stats[2], stats[3], stats[4], stats[5])
     brews_df = pd.read_pickle('data/brews_with_costs_'+stat_string+'.pkl')
 
@@ -101,8 +104,8 @@ def create_model(inventory, stats):
     optimal_df = optimal_df.sort_values(by='value', ascending=False)
     
 
-
-
+    if flag:
+        os.remove('data/brews_with_costs_'+stat_string+'.pkl')
 
     
     return [m.objective_value, optimal_df]
