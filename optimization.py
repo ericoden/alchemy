@@ -54,22 +54,27 @@ def create_model(inventory, stats):
     for b in B:
         for i in A[b]:
             l.append((b,i))
-            
+
     brew_ingredient_pairs = []
+
+    K = 0 # number of brew-ingredient pairs
     for b in B:
         for i in A[b]:
-            brew_ingredient_pairs.append([b,i])
-
+            brew_ingredient_pairs.append([b,i,K])
+            K += 1
     m = Model('alchemy-mip')
-    x = [[m.add_var() for i in I] for b in B]
+    x = [m.add_var() for k in range(K)]
     y = [m.add_var(var_type=INTEGER) for b in B]
+    
     for pair in brew_ingredient_pairs:
         b = pair[0]
         i = pair[1]
-        m += y[b] <= x[b][i]
+        k = pair[2]
+        m += y[b] <= x[k]
 
     for i in I:
-        m += xsum(x[b][i] for b in B) <= inventory[i]
+        
+        m += xsum(x[pair[2]] for pair in brew_ingredient_pairs if pair[1]==i) <= inventory[i]
 
     m.objective = maximize(xsum(c[b] * y[b] for b in B))
 
@@ -85,6 +90,7 @@ def create_model(inventory, stats):
     #m.addConstrs((x.sum('*', i) <= inventory[i] for i in range(len(I))))
     #m.setObjective(gp.quicksum(c[b]*y[b] for b in B), GRB.MAXIMIZE)
     #m.optimize()
+    #print("Gurobi objective:", m.objVal)
     #optimal_brews = [b for b in B if y[b].x > 0.5]
 
 
@@ -94,7 +100,6 @@ def create_model(inventory, stats):
     optimal_df = optimal_df[['name', 'count', 'value', 'first_ingredient', 'second_ingredient', 'third_ingredient', 'descriptions']]
     optimal_df = optimal_df.sort_values(by='value', ascending=False)
     
-    #print("Gurobi objective:", m.objVal)
 
 
 
