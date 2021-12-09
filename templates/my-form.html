@@ -1,0 +1,136 @@
+<form method="POST">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+    box-sizing: border-box;
+}
+
+/* Create two equal columns that float next to each other */
+.column {
+    float: left;
+}
+
+.left {
+  width: 18%;
+}
+
+.right {
+  width: 82%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+input[type="number"] {
+    width: 40px;
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+tr {
+    border-bottom: 1px solid #ddd;
+}
+tr:hover {background-color: #D6EEEE;}
+</style>
+</head>
+<h1>Optimal Alchemy Potions Calculator for Skyrim</h1>
+<p>Based on player stats and current inventory, calculates and displays the list of potions to get the maximum gold.</p>
+<div class="row">
+    <div class="column left">
+        <h2>Player Stats</h2>
+        <div>
+        <input type="submit" name="submit" value='Submit' />
+        </div>
+        <div>
+        <input type="button" value="Reset">
+        </div>
+
+        <div>
+            Alchemy Skill
+            <input type="number" name="Alchemy Skill" value = {{ stats[0] }} min= 0>
+        </div>
+
+        <div>
+            Alchemist Perk
+            <select name="Alchemist Perk" name="Alchemist Perk">
+                <option value='0'{% if stats[1] == 0 %} selected {% endif %}>0</option>
+                <option value='1'{% if stats[1] == 1 %} selected {% endif %}>1</option>
+                <option value='2'{% if stats[1] == 2 %} selected {% endif %}>2</option>
+                <option value='3'{% if stats[1] == 3 %} selected {% endif %}>3</option>
+                <option value='4'{% if stats[1] == 4 %} selected {% endif %}>4</option>
+                <option value='5'{% if stats[1] == 5 %} selected {% endif %}>5</option>
+            </select>
+        </div>
+
+        <div>
+          <input type="checkbox" id="Physician Perk" name="Physician Perk">
+          <label for="Physician Perk">Physician Perk</label>
+        </div>
+
+        <div>
+            <input type="checkbox" id="Benefactor Perk" name="Benefactor Perk">
+            <label for="Benefactor Perk">Benefactor Perk</label>
+          </div>
+
+        <div>
+            <input type="checkbox" id="Poisoner Perk" name="Poisoner Perk">
+            <label for="Poisoner Perk">Poisoner Perk</label>
+        </div>
+    <h2>Inventory</h2>
+
+      <table>
+        {% for key, value in inventory_df.iterrows() %}
+        <tr>
+        <td>{{value['ingredient']}}</td>
+        <td><input type="number" name="{{ value['ingredient'] }}" value = {{ value['inventory'] }} min=0></td>
+        </tr>
+        {% endfor %}
+        </table>
+
+    </div>
+    <div class="column right">
+      <h2>Solution</h2>
+    {% if z > -1 %}
+    <p>
+        Maximum Value: {{z}}
+    </p>
+    
+    <table>
+    <tr>
+        <th>Potion</th>
+        <th>Count</th>
+        <th>Value</th>
+        <th>Ingredient 1</th>
+        <th>Ingredient 2</th>
+        <th>Ingredient 3</th>
+        <th>Effect(s)</th>
+    </tr>
+    {% for key, value in df.iterrows() %}
+    <tr>
+    <td>{{ value['name'] }} </td>
+    <td>{{ value['count'] }} </td>
+    <td>{{ value['value'] }} </td>
+    <td>{{ value['first_ingredient'] }} </td>
+    <td>{{ value['second_ingredient'] }} </td>
+    <td>{{ value['third_ingredient'] }} </td>
+    <td>{% for description in value['descriptions'] %} 
+        {{description}}
+        <br>
+        {% endfor %}
+    </td>
+    </tr>
+    {% endfor %}
+    </table>
+    </div>
+    {% endif %}
+  </div>
+
+</form>
