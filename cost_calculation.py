@@ -196,3 +196,8 @@ def calculate_costs(alchemy_skill = 33,
 #                physician_perk=0,
 #                benefactor_perk=0,
 #                poisoner_perk=0)
+if __name__ == '__main__':
+    for skill in range(0, 10):
+        print("Calculating costs for")
+        print(f'Skill: {skill}')
+        calculate_costs(alchemy_skill=skill)
