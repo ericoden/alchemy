@@ -16,11 +16,11 @@ def my_form():
     inventory = [0 for i in ingredients]
     stats = [0,0,0,0,0,0]
     inventory_df = pd.DataFrame({'ingredient':ingredients, 'inventory':inventory})
-    return render_template('my-form.html', inventory_df=inventory_df, stats = stats, z = z, df=[])
+    return render_template('my-form.html', inventory_df=inventory_df, 
+                            stats = stats, z = z, df=[])
 
 @app.route('/', methods=['GET', 'POST'])
 def my_form_post():
-    #print(request.form)
     alchemy_skill = int(request.form['Alchemy Skill'])
     alchemist_perk = int(request.form['Alchemist Perk'])
     physician_perk = 0
@@ -43,26 +43,36 @@ def my_form_post():
     inventory = []
     for i in ingredients:
         inventory.append(int(request.form[i]))
-    inventory_df = pd.DataFrame({'ingredient':ingredients,'inventory':inventory})
+
+    inventory_df = pd.DataFrame({'ingredient':ingredients,
+                                 'inventory':inventory})
 
     [z, df] = create_model(inventory, stats)
 
-    remaining_inventory = inventory
+    remaining_inventory = inventory_df.copy()
+    remaining_inventory.set_index('ingredient', inplace=True)
+    
+    if len(df) > 0:
+        indices = [i for i in range(len(df))]
+        names = df['name']
+        counts = df['count']
+        values = df['value']
+        first_ingredient = df['first_ingredient']
+        second_ingredient = df['second_ingredient']
+        third_ingredient = df['third_ingredient']
+        descriptions = df['descriptions']
+        for i in first_ingredient:
+            remaining_inventory.at[i, 'inventory'] -= 1
+        for i in second_ingredient:
+            remaining_inventory.at[i, 'inventory'] -= 1
+        for i in third_ingredient:
+            if i != 'NA':
+                remaining_inventory.at[i, 'inventory'] -= 1
 
-    for i in range(len(df)):
-        brew = df.iloc[i]
-        
 
-    indices = [i for i in range(len(df))]
-    names = df['name']
-    counts = df['count']
-    values = df['value']
-    first_ingredient = df['first_ingredient']
-    second_ingredient = df['second_ingredient']
-    third_ingredient = df['third_ingredient']
-    descriptions = df['descriptions']
     return render_template('my-form.html', inventory_df=inventory_df,
                            ingredients = ingredients, stats=stats, 
+                           remaining_inventory=remaining_inventory, 
                            z=int(z), df=df)
 
 if __name__ == "__main__":

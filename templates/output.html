@@ -49,4 +49,10 @@
 {% endfor %}
 </table>
 
+<table>
+    {% for key, value in remaining_inventory.iterrows() %}
+    <td>{{ key }} </td>
+    <td>{{ value['inventory'] }} </td>
+    {% endfor %}
+</table>
 </form>

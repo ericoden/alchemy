@@ -4,6 +4,8 @@ import numpy as np
 import math
 import re
 import time
+import datetime 
+import os
 
 brew_df = pd.read_pickle('data/brews.pkl')
 effects_df = pd.read_pickle('data/effects.pkl')
@@ -171,15 +173,18 @@ def calculate_costs(alchemy_skill = 33,
     BENEFACTOR_PERK = benefactor_perk
     POISONER_PERK = poisoner_perk
 
+    file_name = "_".join(['brews_with_costs', str(ALCHEMY_SKILL),
+                          str(ALCHEMIST_PERK_RANK), str(FORTIFY_ALCHEMY),
+                          str(int(PHYSICIAN_PERK)), str(int(BENEFACTOR_PERK)),
+                          str(int(POISONER_PERK))])
+    if os.path.isfile('data/' + file_name + '.pkl'):
+        print("Costs already calculated for this file!")
+        return 0
     brew_names = []
     brew_values = []
     brew_descriptions = []
-    tic = time.perf_counter()
     for i in range(len(brew_df)):
         [value, brew_name, descriptions] = get_total_value(i)
-        if i % 1000 == 0:
-            toc = time.perf_counter()
-            print('Index:', i, 'Elapsed Time', np.round(toc-tic, 2), 'seconds')
         brew_names.append(brew_name)
         brew_values.append(value)
         brew_descriptions.append(descriptions)
@@ -201,7 +206,11 @@ def calculate_costs(alchemy_skill = 33,
 #                benefactor_perk=0,
 #                poisoner_perk=0)
 if __name__ == '__main__':
-    for skill in range(1, 2):
-        print("Calculating costs for")
-        print(f'Skill: {skill}')
-        calculate_costs(alchemy_skill=skill)
+    tic = time.perf_counter()
+    for alchemist_perk_rank in range(0, 5):
+        for skill in range(0, 101):
+            toc = time.perf_counter()
+            print(f'Skill: {skill} Perk Rank {alchemist_perk_rank} '
+                    f'Elapsed Time:', str(datetime.timedelta(seconds=toc-tic)))
+            calculate_costs(alchemy_skill=skill, 
+                            alchemist_perk_rank=alchemist_perk_rank)

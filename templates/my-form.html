@@ -27,6 +27,7 @@
 }
 
 input[type="number"] {
+    background-color: lightgray;
     width: 40px;
 }
 
@@ -36,13 +37,17 @@ table, th, td {
 }
 
 tr {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid rgb(196, 59, 59);
 }
-tr:hover {background-color: #D6EEEE;}
+tr:hover {background-color: #7babb8;}
 </style>
+
+
 </head>
+<body style="background-color:grey;">
 <h1>Optimal Alchemy Potions Calculator for Skyrim</h1>
-<p>Based on player stats and current inventory, calculates and displays the list of potions to get the maximum gold.</p>
+<p>Based on player stats and current inventory, calculates and displays the 
+    list of potions to generate the maximum amount of gold.</p>
 <div class="row">
     <div class="column left">
         <h2>Player Stats</h2>
@@ -129,8 +134,26 @@ tr:hover {background-color: #D6EEEE;}
     </tr>
     {% endfor %}
     </table>
+    <p>
+        Remaining
+    </p>
+    <table>
+        <tr>
+            <th>Ingredient</th>
+            <th>Count</th>
+        </tr>
+        {% for key, value in remaining_inventory.iterrows() %}
+        {% if value['inventory'] > 0 %}
+        <tr>
+        <td>{{ key }} </td>
+        <td>{{ value['inventory'] }} </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+
     </div>
     {% endif %}
   </div>
-
+</body>
 </form>

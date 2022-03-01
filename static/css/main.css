@@ -1,10 +1,11 @@
 body {
     margin: 0;
     font-family: sans-serif;
+    background: gray;
 }
 
 tr {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid rgb(187, 8, 8);
   }
 
   tr:nth-child(even) {
