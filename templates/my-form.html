@@ -27,7 +27,7 @@
 }
 
 input[type="number"] {
-    background-color: lightgray;
+    background-color: burlywood;
     width: 40px;
 }
 
@@ -36,15 +36,12 @@ table, th, td {
     border-collapse: collapse;
 }
 
-tr {
-    border-bottom: 1px solid rgb(196, 59, 59);
-}
-tr:hover {background-color: #7babb8;}
+tr:hover {background-color: #b8aa7b;}
 </style>
 
 
 </head>
-<body style="background-color:grey;">
+<body style="background-color: rgb(114, 75, 23);">
 <h1>Optimal Alchemy Potions Calculator for Skyrim</h1>
 <p>Based on player stats and current inventory, calculates and displays the 
     list of potions to generate the maximum amount of gold.</p>
@@ -52,10 +49,13 @@ tr:hover {background-color: #7babb8;}
     <div class="column left">
         <h2>Player Stats</h2>
         <div>
-        <input type="submit" name="submit" value='Submit' />
+        <input type="submit" name="submit_button" value='calculate'>
         </div>
         <div>
-        <input type="button" value="Reset">
+        <input type="submit" name="submit_button" value='reset'>
+        </div>
+        <div>
+        <input type="submit" name="submit_button" value='randomize'>
         </div>
 
         <div>
@@ -135,7 +135,7 @@ tr:hover {background-color: #7babb8;}
     {% endfor %}
     </table>
     <p>
-        Remaining
+        Remaining Ingredients
     </p>
     <table>
         <tr>
