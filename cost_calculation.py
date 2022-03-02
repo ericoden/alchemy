@@ -207,10 +207,12 @@ def calculate_costs(alchemy_skill = 33,
 #                poisoner_perk=0)
 if __name__ == '__main__':
     tic = time.perf_counter()
-    for alchemist_perk_rank in range(0, 5):
-        for skill in range(0, 101):
-            toc = time.perf_counter()
-            print(f'Skill: {skill} Perk Rank {alchemist_perk_rank} '
-                    f'Elapsed Time:', str(datetime.timedelta(seconds=toc-tic)))
-            calculate_costs(alchemy_skill=skill, 
-                            alchemist_perk_rank=alchemist_perk_rank)
+    for physician_perk in [True]:
+        for alchemist_perk_rank in range(0, 1):
+            for skill in range(0, 10):
+                toc = time.perf_counter()
+                print(f'Skill: {skill} Perk Rank {alchemist_perk_rank} '
+                        f'Elapsed Time:', str(datetime.timedelta(seconds=toc-tic)))
+                calculate_costs(alchemy_skill=skill, 
+                                alchemist_perk_rank=alchemist_perk_rank,
+                                physician_perk=physician_perk)
